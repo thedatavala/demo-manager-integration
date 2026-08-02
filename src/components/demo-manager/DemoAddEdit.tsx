@@ -97,7 +97,7 @@ const DemoAddEdit = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDemos(data || []);
+      setDemos((data ?? []) as unknown as Demo[]);
     } catch (err: any) {
       console.error('Error fetching demos:', err);
       toast.error('Failed to load demos');

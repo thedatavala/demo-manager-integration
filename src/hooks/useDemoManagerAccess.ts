@@ -199,7 +199,7 @@ export function useDemoManagerAccess(): UseDemoManagerAccessReturn {
         .limit(100);
 
       if (error) throw error;
-      setReportCards(data || []);
+      setReportCards((data ?? []) as unknown as DemoReportCard[]);
     } catch (error) {
       console.error('Error fetching report cards:', error);
     }

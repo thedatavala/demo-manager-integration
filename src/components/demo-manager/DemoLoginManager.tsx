@@ -79,7 +79,7 @@ function DemoLoginManagerContent() {
         .order('display_order');
 
       if (error) throw error;
-      setLoginRoles(data || []);
+      setLoginRoles((data ?? []) as unknown as LoginRole[]);
     } catch (error) {
       console.error('Error fetching login roles:', error);
     }

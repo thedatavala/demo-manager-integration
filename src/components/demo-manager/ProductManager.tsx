@@ -78,7 +78,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({ viewOnly = false
       .select(`*, subcategories:business_subcategories(id, name)`)
       .eq("is_active", true)
       .order("display_order");
-    if (data) setCategories(data);
+    if (data) setCategories(data as unknown as Category[]);
   };
 
   const fetchProducts = async () => {
@@ -126,7 +126,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({ viewOnly = false
         demo_mappings: demoMappings[p.product_id] || []
       }));
 
-      setProducts(productsWithMappings);
+      setProducts(productsWithMappings as unknown as Product[]);
     } catch (error: any) {
       toast.error("Failed to fetch products: " + error.message);
     } finally {
