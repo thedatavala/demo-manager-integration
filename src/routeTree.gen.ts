@@ -10,33 +10,68 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DemoManagerRouteImport } from './routes/demo-manager'
+import { Route as DemoWorkspaceRouteImport } from './routes/demo-workspace'
+import { Route as ProductDemoManagerRouteImport } from './routes/product-demo-manager'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DemoManagerRoute = DemoManagerRouteImport.update({
+  id: '/demo-manager',
+  path: '/demo-manager',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoWorkspaceRoute = DemoWorkspaceRouteImport.update({
+  id: '/demo-workspace',
+  path: '/demo-workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductDemoManagerRoute = ProductDemoManagerRouteImport.update({
+  id: '/product-demo-manager',
+  path: '/product-demo-manager',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/demo-manager': typeof DemoManagerRoute
+  '/demo-workspace': typeof DemoWorkspaceRoute
+  '/product-demo-manager': typeof ProductDemoManagerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/demo-manager': typeof DemoManagerRoute
+  '/demo-workspace': typeof DemoWorkspaceRoute
+  '/product-demo-manager': typeof ProductDemoManagerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/demo-manager': typeof DemoManagerRoute
+  '/demo-workspace': typeof DemoWorkspaceRoute
+  '/product-demo-manager': typeof ProductDemoManagerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/demo-manager' | '/demo-workspace' | '/product-demo-manager'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/demo-manager' | '/demo-workspace' | '/product-demo-manager'
+  id:
+    | '__root__'
+    | '/'
+    | '/demo-manager'
+    | '/demo-workspace'
+    | '/product-demo-manager'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DemoManagerRoute: typeof DemoManagerRoute
+  DemoWorkspaceRoute: typeof DemoWorkspaceRoute
+  ProductDemoManagerRoute: typeof ProductDemoManagerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +83,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/demo-manager': {
+      id: '/demo-manager'
+      path: '/demo-manager'
+      fullPath: '/demo-manager'
+      preLoaderRoute: typeof DemoManagerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo-workspace': {
+      id: '/demo-workspace'
+      path: '/demo-workspace'
+      fullPath: '/demo-workspace'
+      preLoaderRoute: typeof DemoWorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product-demo-manager': {
+      id: '/product-demo-manager'
+      path: '/product-demo-manager'
+      fullPath: '/product-demo-manager'
+      preLoaderRoute: typeof ProductDemoManagerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DemoManagerRoute: DemoManagerRoute,
+  DemoWorkspaceRoute: DemoWorkspaceRoute,
+  ProductDemoManagerRoute: ProductDemoManagerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
