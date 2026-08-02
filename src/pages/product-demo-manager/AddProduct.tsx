@@ -27,7 +27,7 @@ const productSchema = z.object({
   pricing_model: z.string().min(1, "Pricing plan is required"),
   lifetime_price: z.number().min(0).optional(),
   monthly_price: z.number().min(0).optional(),
-  visibility: z.string().default("global"),
+  visibility: z.string().min(1),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;

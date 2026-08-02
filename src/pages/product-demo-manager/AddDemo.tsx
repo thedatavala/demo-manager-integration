@@ -24,7 +24,7 @@ const demoSchema = z.object({
   title: z.string().min(3, "Demo title must be at least 3 characters"),
   category: z.string().min(1, "Category is required"),
   demo_type: z.string().min(1, "Demo type is required"),
-  url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  url: z.string().url("Must be a valid URL"),
   description: z.string().optional(),
 });
 
@@ -72,7 +72,7 @@ const AddDemo = ({ onSuccess }: AddDemoProps) => {
         title: data.title,
         category: data.category,
         demo_type: data.demo_type,
-        url: data.url || null,
+        url: data.url,
         description: data.description,
         status: "active",
       });
