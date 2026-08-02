@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoManagerRouteImport } from './routes/demo-manager'
+import { Route as DemoWorkspaceRouteImport } from './routes/demo-workspace'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const DemoManagerRoute = DemoManagerRouteImport.update({
   path: '/demo-manager',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DemoWorkspaceRoute = DemoWorkspaceRouteImport.update({
+  id: '/demo-workspace',
+  path: '/demo-workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo-manager': typeof DemoManagerRoute
+  '/demo-workspace': typeof DemoWorkspaceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/demo-manager': typeof DemoManagerRoute
+  '/demo-workspace': typeof DemoWorkspaceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/demo-manager': typeof DemoManagerRoute
+  '/demo-workspace': typeof DemoWorkspaceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo-manager'
+  fullPaths: '/' | '/demo-manager' | '/demo-workspace'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo-manager'
-  id: '__root__' | '/' | '/demo-manager'
+  to: '/' | '/demo-manager' | '/demo-workspace'
+  id: '__root__' | '/' | '/demo-manager' | '/demo-workspace'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoManagerRoute: typeof DemoManagerRoute
+  DemoWorkspaceRoute: typeof DemoWorkspaceRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoManagerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/demo-workspace': {
+      id: '/demo-workspace'
+      path: '/demo-workspace'
+      fullPath: '/demo-workspace'
+      preLoaderRoute: typeof DemoWorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoManagerRoute: DemoManagerRoute,
+  DemoWorkspaceRoute: DemoWorkspaceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
