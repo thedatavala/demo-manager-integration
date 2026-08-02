@@ -50,7 +50,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface SoftwareItem {
   id: string;
   name: string;
-  base_price: number;
+  base_price: number | null;
   type: string;
   vendor: string;
   category: string | null;
@@ -198,7 +198,7 @@ const SoftwareCatalogManager = () => {
       setImportProgress(20);
 
       // Parse CSV
-      const csvData = [];
+      const csvData: Record<string, string>[] = [];
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
@@ -312,7 +312,7 @@ const SoftwareCatalogManager = () => {
       setImportProgress(15);
 
       // Parse CSV
-      const csvData = [];
+      const csvData: Record<string, string>[] = [];
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;

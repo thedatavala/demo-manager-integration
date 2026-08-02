@@ -20,20 +20,20 @@ import {
 interface Category {
   id: string;
   name: string;
-  icon: string;
+  icon: string | null;
   subcategories: { id: string; name: string }[];
 }
 
 interface Product {
   product_id: string;
   product_name: string;
-  product_type: string;
+  product_type: string | null;
   description: string;
   status: string;
   business_category_id: string;
   subcategory_id: string;
   created_at: string;
-  category?: { id: string; name: string; icon: string };
+  category?: { id: string; name: string; icon: string | null };
   subcategory?: { id: string; name: string };
   demo_mappings?: { demo_id: string; demos: { id: string; title: string; url: string; status: string } }[];
 }

@@ -28,7 +28,6 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import ValaAICommandCenter from "@/components/vala-ai-module/ValaAICommandCenter";
 
 interface DemoManagerMainContentProps {
   activeView: string;
@@ -163,11 +162,6 @@ const viewTitles: Record<string, { title: string; icon: React.ComponentType<{ cl
 const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-
-  // Render Dev Studio if selected
-  if (activeView === "dev-studio") {
-    return <ValaAICommandCenter />;
-  }
 
   const currentView = viewTitles[activeView] || { title: "Demo Overview", icon: Terminal };
   const ViewIcon = currentView.icon;

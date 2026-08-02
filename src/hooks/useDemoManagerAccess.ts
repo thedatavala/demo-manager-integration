@@ -23,7 +23,7 @@ export interface DemoReportCard {
   completion_time_seconds: number | null;
   old_values: any;
   new_values: any;
-  auto_registered: boolean;
+  auto_registered: boolean | null;
   workflow_status: string;
   created_at: string;
 }

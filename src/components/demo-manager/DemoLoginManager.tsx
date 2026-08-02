@@ -40,7 +40,7 @@ interface LoginRole {
   role_name: string;
   username: string;
   password_encrypted: string;
-  is_active: boolean;
+  is_active: boolean | null;
 }
 
 function DemoLoginManagerContent() {

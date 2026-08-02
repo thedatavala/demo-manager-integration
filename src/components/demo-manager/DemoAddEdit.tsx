@@ -55,7 +55,7 @@ interface Demo {
   title: string;
   category: string;
   url: string;
-  login_url: string;
+  login_url: string | null;
   demo_type: string;
   status: string;
   description: string;
