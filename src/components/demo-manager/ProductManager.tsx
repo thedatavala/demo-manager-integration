@@ -25,17 +25,17 @@ interface Category {
 }
 
 interface Product {
-  product_id: string;
-  product_name: string;
+  product_id: string | null;
+  product_name: string | null;
   product_type: string | null;
-  description: string;
-  status: string;
-  business_category_id: string;
-  subcategory_id: string;
-  created_at: string;
+  description: string | null;
+  status: string | null;
+  business_category_id: string | null;
+  subcategory_id: string | null;
+  created_at: string | null;
   category?: { id: string; name: string; icon: string | null };
-  subcategory?: { id: string; name: string };
-  demo_mappings?: { demo_id: string; demos: { id: string; title: string; url: string; status: string } }[];
+  subcategory?: { id: string; name: string } | null;
+  demo_mappings?: { demo_id: string; demos: { id: string; title: string; url: string; status: string } }[] | null;
 }
 
 interface Demo {

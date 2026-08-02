@@ -52,14 +52,14 @@ import { apiService } from "@/lib/api/apiService";
 
 interface Demo {
   id: string;
-  title: string;
-  category: string;
-  url: string;
+  title: string | null;
+  category: string | null;
+  url: string | null;
   login_url: string | null;
-  demo_type: string;
-  status: string;
-  description: string;
-  created_at: string;
+  demo_type: string | null;
+  status: string | null;
+  description: string | null;
+  created_at: string | null;
 }
 
 const DemoAddEdit = () => {

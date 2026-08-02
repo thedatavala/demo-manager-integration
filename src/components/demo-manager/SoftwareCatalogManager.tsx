@@ -49,14 +49,14 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface SoftwareItem {
   id: string;
-  name: string;
+  name: string | null;
   base_price: number | null;
-  type: string;
-  vendor: string;
+  type: string | null;
+  vendor: string | null;
   category: string | null;
   demo_url: string | null;
-  is_demo_registered: boolean;
-  created_at: string;
+  is_demo_registered: boolean | null;
+  created_at: string | null;
 }
 
 interface ImportStats {
