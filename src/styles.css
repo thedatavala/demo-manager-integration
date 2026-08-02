@@ -356,7 +356,7 @@
   }
 
   .glass-panel-glow {
-    @apply glass-panel;
+    @apply bg-card/70 backdrop-blur-xl border border-border/40 rounded-xl;
     box-shadow: 
       0 0 0 1px hsl(var(--glass-border)),
       0 0 40px hsl(var(--aurora-violet) / 0.15),
@@ -525,7 +525,7 @@
      ======================================== */
   
   .metric-card {
-    @apply glass-panel p-5 relative overflow-hidden;
+    @apply bg-card/70 backdrop-blur-xl border border-border/40 rounded-xl p-5 relative overflow-hidden;
   }
 
   .metric-card::before {
