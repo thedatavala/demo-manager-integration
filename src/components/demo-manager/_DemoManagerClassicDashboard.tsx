@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "@/hooks/useNavigate";
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutGrid, Activity, Link2, BarChart3, Package, PlusCircle,

@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShieldX, AlertTriangle, ArrowLeft, Lock } from 'lucide-react';
 import { useDemoManagerAccess } from '@/hooks/useDemoManagerAccess';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "@/hooks/useNavigate";
 import { motion } from 'framer-motion';
 
 interface DemoAccessGateProps {

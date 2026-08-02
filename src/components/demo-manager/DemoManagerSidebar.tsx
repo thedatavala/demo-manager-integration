@@ -1,7 +1,7 @@
 import { useState } from "react";
 import softwareValaLogo from '@/assets/software-vala-logo-transparent.png';
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/hooks/useNavigate";
 import { 
   LayoutGrid, 
   Activity, 
