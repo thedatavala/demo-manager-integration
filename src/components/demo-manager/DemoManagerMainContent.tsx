@@ -28,77 +28,11 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { useDemoOverview } from "@/hooks/useDemoOverview";
 
 interface DemoManagerMainContentProps {
   activeView: string;
 }
-
-// Demo instances data
-const demosData = [
-  {
-    id: "demo-001",
-    name: "Enterprise Suite Demo",
-    product: "Software Vala Enterprise",
-    status: "running",
-    activeUsers: 12,
-    expiresIn: "7 days",
-    createdBy: "Alex Chen",
-    region: "North America",
-    usagePercent: 78,
-  },
-  {
-    id: "demo-002",
-    name: "SMB Trial Instance",
-    product: "Software Vala Pro",
-    status: "running",
-    activeUsers: 5,
-    expiresIn: "14 days",
-    createdBy: "Sarah Kim",
-    region: "Europe",
-    usagePercent: 45,
-  },
-  {
-    id: "demo-003",
-    name: "Healthcare Module Demo",
-    product: "Software Vala Health",
-    status: "paused",
-    activeUsers: 0,
-    expiresIn: "3 days",
-    createdBy: "Marcus Johnson",
-    region: "Asia Pacific",
-    usagePercent: 92,
-  },
-  {
-    id: "demo-004",
-    name: "Retail Demo Environment",
-    product: "Software Vala Retail",
-    status: "expired",
-    activeUsers: 0,
-    expiresIn: "Expired",
-    createdBy: "Emma Rodriguez",
-    region: "South America",
-    usagePercent: 100,
-  },
-  {
-    id: "demo-005",
-    name: "Education Platform Trial",
-    product: "Software Vala Edu",
-    status: "running",
-    activeUsers: 28,
-    expiresIn: "21 days",
-    createdBy: "David Park",
-    region: "Middle East",
-    usagePercent: 35,
-  },
-];
-
-// Demo request queue
-const demoRequestsData = [
-  { id: "req-001", company: "TechCorp Inc", product: "Enterprise Suite", requestedBy: "John Smith", priority: "high", requestDate: "2024-01-15" },
-  { id: "req-002", company: "RetailMax", product: "Retail Module", requestedBy: "Sarah Lee", priority: "medium", requestDate: "2024-01-14" },
-  { id: "req-003", company: "HealthPlus", product: "Health Module", requestedBy: "Dr. James", priority: "high", requestDate: "2024-01-13" },
-  { id: "req-004", company: "EduWorld", product: "Education Platform", requestedBy: "Mary Johnson", priority: "low", requestDate: "2024-01-12" },
-];
 
 // View title mapping
 const viewTitles: Record<string, { title: string; icon: React.ComponentType<{ className?: string }> }> = {
@@ -162,37 +96,80 @@ const viewTitles: Record<string, { title: string; icon: React.ComponentType<{ cl
 const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const {
+    demos,
+    requests,
+    isLoading,
+    isFetching,
+    error,
+    setDemoStatus,
+    extendDemo,
+    cloneDemo,
+    respondToRequest,
+    refresh,
+  } = useDemoOverview();
 
   const currentView = viewTitles[activeView] || { title: "Demo Overview", icon: Terminal };
   const ViewIcon = currentView.icon;
 
-  // Action handlers
-  const handleStartDemo = (demoId: string) => {
-    toast.success(`Demo ${demoId} started`);
+  // Action handlers — all writes hit the live Software Vala backend
+  const handleStartDemo = async (demoId: string) => {
+    try {
+      await setDemoStatus.mutateAsync({ id: demoId, status: "active" });
+      toast.success("Demo started");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
   };
 
-  const handleStopDemo = (demoId: string) => {
-    toast.info(`Demo ${demoId} stopped`);
+  const handleStopDemo = async (demoId: string) => {
+    try {
+      await setDemoStatus.mutateAsync({ id: demoId, status: "maintenance" });
+      toast.info("Demo paused");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
   };
 
-  const handleExtendDemo = (demoId: string) => {
-    toast.success(`Demo ${demoId} extended by 7 days`);
+  const handleExtendDemo = async (demoId: string) => {
+    try {
+      await extendDemo.mutateAsync({ id: demoId, days: 7 });
+      toast.success("Demo extended by 7 days");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
   };
 
-  const handleCloneDemo = (demoId: string) => {
-    toast.success(`Demo ${demoId} cloned`);
+  const handleCloneDemo = async (demoId: string) => {
+    try {
+      await cloneDemo.mutateAsync(demoId);
+      toast.success("Demo cloned");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
   };
 
-  const handleApproveRequest = (reqId: string) => {
-    toast.success(`Request ${reqId} approved`);
+  const handleApproveRequest = async (reqId: string) => {
+    try {
+      await respondToRequest.mutateAsync({ id: reqId, status: "approved" });
+      toast.success("Request approved");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
   };
 
-  const handleRejectRequest = (reqId: string) => {
-    toast.error(`Request ${reqId} rejected`);
+  const handleRejectRequest = async (reqId: string) => {
+    try {
+      await respondToRequest.mutateAsync({ id: reqId, status: "rejected" });
+      toast.info("Request rejected");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
   };
 
-  const handleRefresh = () => {
-    toast.info("Refreshing data...");
+  const handleRefresh = async () => {
+    await refresh();
+    toast.info("Data refreshed");
   };
 
   const getStatusColor = (status: string) => {
@@ -213,7 +190,7 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
     }
   };
 
-  const filteredDemos = demosData.filter(demo => {
+  const filteredDemos = demos.filter(demo => {
     const matchesSearch = 
       demo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       demo.product.toLowerCase().includes(searchQuery.toLowerCase());
@@ -222,11 +199,14 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
   });
 
   const totalStats = {
-    totalDemos: demosData.length,
-    activeDemos: demosData.filter(d => d.status === "running").length,
-    totalUsers: demosData.reduce((sum, d) => sum + d.activeUsers, 0),
-    pendingRequests: demoRequestsData.length,
-    expiringSoon: demosData.filter(d => d.expiresIn.includes("3") || d.expiresIn.includes("7")).length,
+    totalDemos: demos.length,
+    activeDemos: demos.filter(d => d.status === "running").length,
+    totalUsers: demos.reduce((sum, d) => sum + d.activeUsers, 0),
+    pendingRequests: requests.length,
+    expiringSoon: demos.filter(d => {
+      const match = /^(\d+) day/.exec(d.expiresIn);
+      return match ? Number(match[1]) <= 7 : false;
+    }).length,
   };
 
   return (
@@ -244,8 +224,8 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" className="gap-2" onClick={handleRefresh}>
-              <RefreshCw className="w-4 h-4" />
+            <Button variant="outline" size="sm" className="gap-2" onClick={handleRefresh} disabled={isFetching}>
+              <RefreshCw className={cn("w-4 h-4", isFetching && "animate-spin")} />
               Refresh
             </Button>
             <Button size="sm" className="gap-2 bg-gradient-to-r from-teal-500 to-cyan-600">
@@ -283,7 +263,7 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground">Active Users</p>
+                  <p className="text-xs text-muted-foreground">Login Roles</p>
                   <p className="text-3xl font-bold text-blue-400">{totalStats.totalUsers}</p>
                 </div>
                 <Users className="w-10 h-10 text-blue-400/30" />
@@ -350,6 +330,27 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
               <Terminal className="w-5 h-5 text-teal-400" />
               Demo Instances
             </h2>
+            {error && (
+              <Card className="border-destructive/40 bg-destructive/5">
+                <CardContent className="p-4 text-sm text-destructive">
+                  Could not load demos: {error.message}
+                </CardContent>
+              </Card>
+            )}
+            {isLoading && (
+              <Card className="bg-card/50 border-border/50">
+                <CardContent className="p-4 text-sm text-muted-foreground flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Loading demos...
+                </CardContent>
+              </Card>
+            )}
+            {!isLoading && !error && filteredDemos.length === 0 && (
+              <Card className="bg-card/50 border-border/50">
+                <CardContent className="p-4 text-sm text-muted-foreground">
+                  No demos match the current filters.
+                </CardContent>
+              </Card>
+            )}
             {filteredDemos.map((demo) => (
               <motion.div
                 key={demo.id}
@@ -370,14 +371,14 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
                     <p className="text-sm text-muted-foreground">{demo.product}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-foreground">{demo.activeUsers} users</p>
-                    <p className="text-xs text-muted-foreground">{demo.region}</p>
+                    <p className="text-sm font-semibold text-foreground">{demo.activeUsers} login roles</p>
+                    <p className="text-xs text-muted-foreground uppercase">{demo.region}</p>
                   </div>
                 </div>
 
                 <div className="space-y-2 mb-3">
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Usage</span>
+                    <span>Health</span>
                     <span>{demo.usagePercent}%</span>
                   </div>
                   <Progress value={demo.usagePercent} className="h-2" />
@@ -420,7 +421,14 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
               <Clock className="w-5 h-5 text-amber-400" />
               Pending Requests
             </h2>
-            {demoRequestsData.map((req) => (
+            {!isLoading && requests.length === 0 && (
+              <Card className="bg-card/50 border-border/50">
+                <CardContent className="p-4 text-sm text-muted-foreground">
+                  No pending demo requests.
+                </CardContent>
+              </Card>
+            )}
+            {requests.map((req) => (
               <Card key={req.id} className="bg-card/50 border-border/50">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
