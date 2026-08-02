@@ -8,24 +8,24 @@ type AppRole = Database['public']['Enums']['app_role'];
 
 export interface DemoReportCard {
   id: string;
-  demo_id: string | null;
-  demo_name: string | null;
-  sector: string | null;
-  sub_category: string | null;
-  action_type: string | null;
-  performed_by: string | null;
-  performed_by_role: string | null;
-  action_timestamp: string | null;
-  demo_status: string | null;
-  uptime_state: string | null;
-  error_details: string | null;
-  fix_details: string | null;
-  completion_time_seconds: number | null;
-  old_values: any | null;
-  new_values: any | null;
-  auto_registered: boolean | null;
-  workflow_status: string | null;
-  created_at: string | null;
+  demo_id: string;
+  demo_name: string;
+  sector: string;
+  sub_category: string;
+  action_type: string;
+  performed_by: string;
+  performed_by_role: string;
+  action_timestamp: string;
+  demo_status: string;
+  uptime_state: string;
+  error_details: string;
+  fix_details: string;
+  completion_time_seconds: number;
+  old_values: any;
+  new_values: any;
+  auto_registered: boolean;
+  workflow_status: string;
+  created_at: string;
 }
 
 interface UseDemoManagerAccessReturn {
