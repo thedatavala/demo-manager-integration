@@ -250,13 +250,6 @@ const menuSections: MenuItem[] = [
       { id: "inspect-disable", label: "Inspect Disable", icon: Search },
     ],
   },
-  // 1️⃣3️⃣ VALA AI Dev Studio
-  {
-    id: "dev-studio",
-    label: "Dev Studio",
-    icon: Code2,
-    badge: "LIVE",
-  },
 ];
 
 const DemoManagerSidebar = ({ activeView, onViewChange }: DemoManagerSidebarProps) => {
