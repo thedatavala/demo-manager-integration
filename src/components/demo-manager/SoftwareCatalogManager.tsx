@@ -169,7 +169,7 @@ const SoftwareCatalogManager = () => {
       const { data, error } = await query;
 
       if (error) throw error;
-      setCatalogItems(data || []);
+      setCatalogItems((data ?? []) as unknown as SoftwareItem[]);
     } catch (error) {
       console.error('Error fetching catalog:', error);
       toast({ title: "Error", description: "Failed to load catalog", variant: "destructive" });
