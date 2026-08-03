@@ -85,13 +85,16 @@ const DemoPendingRequests = () => {
     setBusyId(id);
     try {
       const { data: auth } = await supabase.auth.getUser();
-      const payload: Record<string, unknown> = {
-        status,
-        responded_at: new Date().toISOString(),
-        responded_by: auth.user?.id ?? null,
-      };
-      if (notes) payload.notes = notes;
-      const { error: updateError } = await supabase.from('demo_requests').update(payload).eq('id', id);
+      const { error: updateError } = await supabase
+        .from('demo_requests')
+        .update({
+          status,
+          responded_at: new Date().toISOString(),
+          responded_by: auth.user?.id ?? null,
+          ...(notes ? { notes } : {}),
+        })
+        .eq('id', id);
+
       if (updateError) throw updateError;
       await queryClient.invalidateQueries({ queryKey: pendingKey });
       await queryClient.invalidateQueries({ queryKey: ['demo-manager', 'demo-requests'] });
