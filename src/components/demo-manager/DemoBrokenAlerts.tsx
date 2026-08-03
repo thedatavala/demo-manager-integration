@@ -98,11 +98,11 @@ const DemoBrokenAlerts = () => {
           .limit(5000),
       ]);
 
-      const latestHealth = new Map<string, (typeof health.data)[number]>();
+      const latestHealth = new Map<string, NonNullable<typeof health.data>[number]>();
       (health.data ?? []).forEach((h) => {
         if (!latestHealth.has(h.demo_id)) latestHealth.set(h.demo_id, h);
       });
-      const latestValidation = new Map<string, (typeof validations.data)[number]>();
+      const latestValidation = new Map<string, NonNullable<typeof validations.data>[number]>();
       (validations.data ?? []).forEach((v) => {
         if (v.demo_id && !latestValidation.has(v.demo_id)) latestValidation.set(v.demo_id, v);
       });
