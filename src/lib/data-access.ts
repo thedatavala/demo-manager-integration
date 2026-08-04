@@ -6,6 +6,15 @@
 
 export type DataAccessKind = "permission" | "auth" | "network" | "unknown";
 
+export interface DataAccessCheck {
+  /** What to verify in the database. */
+  label: string;
+  /** Why it matters / how to confirm it. */
+  detail: string;
+  /** Optional SQL to run for the check. */
+  sql?: string;
+}
+
 export interface DataAccessDiagnosis {
   kind: DataAccessKind;
   title: string;
@@ -13,7 +22,76 @@ export interface DataAccessDiagnosis {
   /** Actionable next steps shown as a checklist in the UI. */
   steps: string[];
   raw?: string;
+  /** Postgres / PostgREST error code, when the backend supplied one. */
+  code?: string;
+  /** HTTP status, when present on the error object. */
+  status?: number;
+  details?: string;
+  hint?: string;
+  /** Plain-language explanation of what the specific code means. */
+  explanation: string;
+  /** Database policy / grant checks to verify, shown in the diagnostics modal. */
+  checks: DataAccessCheck[];
 }
+
+/** Human explanation per known backend error code. */
+const CODE_EXPLANATIONS: Record<string, string> = {
+  "42501": "Postgres refused the statement: the role executing the query has no table privilege (a missing GRANT), or a write violated a row-level security WITH CHECK expression.",
+  PGRST301: "PostgREST rejected the JWT or the role it maps to could not access the resource — usually an expired token or a role without access to the schema.",
+  PGRST116: "The query returned no rows where exactly one was expected. With RLS enabled this normally means the row exists but the SELECT policy filtered it out for your role.",
+  PGRST204: "PostgREST could not find the requested column or resource for your role — often a policy or schema-cache mismatch.",
+  "428C9": "The target column is generated and cannot be written to directly.",
+  "23503": "A foreign key referenced a row your role cannot see or that does not exist.",
+};
+
+const genericExplanation = (kind: DataAccessKind) =>
+  kind === "permission"
+    ? "The request reached the database and was rejected by row-level security or table privileges, so no rows were returned."
+    : kind === "auth"
+      ? "The request was made without a valid session token, so the database treated it as the anonymous role."
+      : kind === "network"
+        ? "The request never completed — the backend was unreachable or timed out."
+        : "The backend returned an error that does not match a known permission, auth or network pattern.";
+
+const tableFromResource = (resource: string): string => {
+  const lower = resource.toLowerCase();
+  if (lower.includes("request")) return "demo_requests";
+  if (lower.includes("log") || lower.includes("activity") || lower.includes("audit")) return "audit_logs";
+  if (lower.includes("alert") || lower.includes("health") || lower.includes("broken")) return "demo_health";
+  if (lower.includes("click") || lower.includes("analytic")) return "demo_clicks";
+  return "demos";
+};
+
+/** Concrete database checks for a permission/auth failure on a given resource. */
+export const policyChecksFor = (resource: string): DataAccessCheck[] => {
+  const table = tableFromResource(resource);
+  return [
+    {
+      label: `Table privileges exist on public.${table}`,
+      detail:
+        "PostgREST needs an explicit GRANT per role; RLS policies alone are not enough. Missing grants surface as error 42501 (permission denied).",
+      sql: `select grantee, privilege_type\n  from information_schema.role_table_grants\n where table_schema = 'public' and table_name = '${table}';`,
+    },
+    {
+      label: `A SELECT policy on public.${table} matches your role`,
+      detail:
+        "If every policy scopes to a role you do not hold, reads succeed but return zero rows instead of an error.",
+      sql: `select policyname, cmd, roles, qual\n  from pg_policies\n where schemaname = 'public' and tablename = '${table}';`,
+    },
+    {
+      label: "Your user holds the demo_manager role",
+      detail:
+        "Demo Manager policies check the role table via the has_role security-definer function; without the row the policy evaluates to false.",
+      sql: `select role from public.user_roles where user_id = auth.uid();`,
+    },
+    {
+      label: "The request carried a valid session token",
+      detail:
+        "An expired or missing JWT makes the query run as the anonymous role, which most Demo Manager policies exclude (PGRST301 / HTTP 401).",
+    },
+  ];
+};
+
 
 const PERMISSION_CODES = new Set([
   "42501", // insufficient_privilege (missing GRANT)
