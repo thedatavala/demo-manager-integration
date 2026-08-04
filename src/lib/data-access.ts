@@ -155,6 +155,10 @@ export const diagnoseDataAccess = (
 ): DataAccessDiagnosis => {
   const resource = options.resource ?? "this data";
   const raw = errorText(error) || undefined;
+  const e = (error ?? {}) as { code?: string; status?: number; details?: string; hint?: string };
+  const meta = { code: e.code, status: e.status, details: e.details, hint: e.hint, raw };
+  const explain = (kind: DataAccessKind) =>
+    (e.code && CODE_EXPLANATIONS[e.code]) || genericExplanation(kind);
 
   if (isAuthError(error) || (isPermissionError(error) && options.hasSession === false)) {
     return {
@@ -166,7 +170,9 @@ export const diagnoseDataAccess = (
         "Ask an admin to grant your account the demo_manager role if you do not have it yet.",
         "Reload this page once the session is active — data loads automatically.",
       ],
-      raw,
+      ...meta,
+      explanation: explain("auth"),
+      checks: policyChecksFor(resource),
     };
   }
 
@@ -180,7 +186,9 @@ export const diagnoseDataAccess = (
         "Ask an admin to add your user to the Demo Manager team, then reload.",
         "If you are an admin: verify the read policy and table grants for this resource.",
       ],
-      raw,
+      ...meta,
+      explanation: explain("permission"),
+      checks: policyChecksFor(resource),
     };
   }
 
@@ -194,7 +202,9 @@ export const diagnoseDataAccess = (
         "Check your network connection and retry.",
         "If the problem persists, the Software Vala backend may be temporarily unavailable.",
       ],
-      raw,
+      ...meta,
+      explanation: explain("network"),
+      checks: [],
     };
   }
 
@@ -203,6 +213,9 @@ export const diagnoseDataAccess = (
     title: "Could not load data",
     message: `Something went wrong while loading ${resource}.`,
     steps: ["Retry the request.", "If it keeps failing, share the technical detail below with an admin."],
-    raw,
+    ...meta,
+    explanation: explain("unknown"),
+    checks: policyChecksFor(resource),
   };
 };
+
