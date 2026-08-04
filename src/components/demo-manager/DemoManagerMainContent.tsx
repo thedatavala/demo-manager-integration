@@ -465,6 +465,8 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
                 </CardContent>
               </Card>
             ))}
+            </DataStateNotice>
+
           </div>
         </div>
       </div>
