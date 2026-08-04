@@ -330,28 +330,24 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
               <Terminal className="w-5 h-5 text-teal-400" />
               Demo Instances
             </h2>
-            {error && (
-              <Card className="border-destructive/40 bg-destructive/5">
-                <CardContent className="p-4 text-sm text-destructive">
-                  Could not load demos: {error.message}
-                </CardContent>
-              </Card>
-            )}
-            {isLoading && (
-              <Card className="bg-card/50 border-border/50">
-                <CardContent className="p-4 text-sm text-muted-foreground flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Loading demos...
-                </CardContent>
-              </Card>
-            )}
-            {!isLoading && !error && filteredDemos.length === 0 && (
-              <Card className="bg-card/50 border-border/50">
-                <CardContent className="p-4 text-sm text-muted-foreground">
-                  No demos match the current filters.
-                </CardContent>
-              </Card>
-            )}
+            <DataStateNotice
+              isLoading={isDemosLoading}
+              error={demosError}
+              isEmpty={filteredDemos.length === 0}
+              hasSession={Boolean(user)}
+              resource="the demo instance list"
+              loadingLabel="Loading demos…"
+              emptyTitle={demos.length === 0 ? "No demos yet" : "No matches"}
+              emptyDescription={
+                demos.length === 0
+                  ? "No demo instances exist in the backend yet."
+                  : "No demos match the current search or status filter."
+              }
+              emptyIcon={<Terminal className="w-8 h-8 text-muted-foreground" />}
+              onRetry={handleRefresh}
+            >
             {filteredDemos.map((demo) => (
+
               <motion.div
                 key={demo.id}
                 whileHover={{ scale: 1.01 }}
