@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,13 @@ import {
   Lock,
   RefreshCw,
   ShieldAlert,
+  Stethoscope,
   WifiOff,
   Inbox,
 } from "lucide-react";
 import { diagnoseDataAccess } from "@/lib/data-access";
+import { useDataRetry, useRegisterRetry } from "@/hooks/useDataRetry";
+import PermissionDiagnosticsDialog from "./PermissionDiagnosticsDialog";
 
 interface DataStateNoticeProps {
   isLoading?: boolean;
@@ -33,7 +36,7 @@ interface DataStateNoticeProps {
 /**
  * Single place that renders loading / permission-denied / error / empty states
  * for every Demo Manager panel, so an RLS block never masquerades as
- * "no records yet".
+ * "no records yet". Each panel's retry also joins the shared recheck flow.
  */
 export function DataStateNotice({
   isLoading,
@@ -48,6 +51,10 @@ export function DataStateNotice({
   onRetry,
   children,
 }: DataStateNoticeProps) {
+  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
+  const { retryAll, isRetrying, registered } = useDataRetry();
+  useRegisterRetry(onRetry);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-3">
