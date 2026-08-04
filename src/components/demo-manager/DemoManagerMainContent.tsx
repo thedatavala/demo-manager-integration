@@ -174,9 +174,10 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
   };
 
   const handleRefresh = async () => {
-    await refresh();
+    await Promise.all([refresh(), retryAll()]);
     toast.info("Data refreshed");
   };
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
