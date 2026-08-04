@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import { useDemoOverview } from "@/hooks/useDemoOverview";
 import { useAuth } from "@/hooks/useAuth";
 import DataStateNotice from "./DataStateNotice";
+import { useDataRetry } from "@/hooks/useDataRetry";
 
 interface DemoManagerMainContentProps {
   activeView: string;
@@ -99,6 +100,7 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const { user } = useAuth();
+  const { retryAll, isRetrying } = useDataRetry();
   const {
     demos,
     requests,
@@ -174,9 +176,10 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
   };
 
   const handleRefresh = async () => {
-    await refresh();
+    await Promise.all([refresh(), retryAll()]);
     toast.info("Data refreshed");
   };
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -230,8 +233,8 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" className="gap-2" onClick={handleRefresh} disabled={isFetching}>
-              <RefreshCw className={cn("w-4 h-4", isFetching && "animate-spin")} />
+            <Button variant="outline" size="sm" className="gap-2" onClick={handleRefresh} disabled={isFetching || isRetrying}>
+              <RefreshCw className={cn("w-4 h-4", (isFetching || isRetrying) && "animate-spin")} />
               Refresh
             </Button>
             <Button size="sm" className="gap-2 bg-gradient-to-r from-teal-500 to-cyan-600">

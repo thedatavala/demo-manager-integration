@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,13 @@ import {
   Lock,
   RefreshCw,
   ShieldAlert,
+  Stethoscope,
   WifiOff,
   Inbox,
 } from "lucide-react";
 import { diagnoseDataAccess } from "@/lib/data-access";
+import { useDataRetry, useRegisterRetry } from "@/hooks/useDataRetry";
+import PermissionDiagnosticsDialog from "./PermissionDiagnosticsDialog";
 
 interface DataStateNoticeProps {
   isLoading?: boolean;
@@ -33,7 +36,7 @@ interface DataStateNoticeProps {
 /**
  * Single place that renders loading / permission-denied / error / empty states
  * for every Demo Manager panel, so an RLS block never masquerades as
- * "no records yet".
+ * "no records yet". Each panel's retry also joins the shared recheck flow.
  */
 export function DataStateNotice({
   isLoading,
@@ -48,6 +51,10 @@ export function DataStateNotice({
   onRetry,
   children,
 }: DataStateNoticeProps) {
+  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
+  const { retryAll, isRetrying, registered } = useDataRetry();
+  useRegisterRetry(onRetry);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-3">
@@ -113,13 +120,30 @@ export function DataStateNotice({
               </ol>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {onRetry && (
-                <Button size="sm" variant="outline" onClick={onRetry}>
+                <Button size="sm" variant="outline" onClick={onRetry} disabled={isRetrying}>
                   <RefreshCw className="w-4 h-4 mr-2" />
-                  Retry
+                  Retry this panel
                 </Button>
               )}
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => void retryAll()}
+                disabled={isRetrying || registered === 0}
+              >
+                {isRetrying ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                )}
+                {isRetrying ? "Rechecking…" : `Recheck all${registered ? ` (${registered})` : ""}`}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setDiagnosticsOpen(true)}>
+                <Stethoscope className="w-4 h-4 mr-2" />
+                Diagnostics
+              </Button>
             </div>
 
             {diagnosis.raw && (
@@ -132,9 +156,19 @@ export function DataStateNotice({
             )}
           </CardContent>
         </Card>
+
+        <PermissionDiagnosticsDialog
+          open={diagnosticsOpen}
+          onOpenChange={setDiagnosticsOpen}
+          diagnosis={diagnosis}
+          resource={resource}
+          hasSession={hasSession}
+          onRetry={onRetry ?? (() => void retryAll())}
+        />
       </motion.div>
     );
   }
+
 
   if (isEmpty) {
     return (
