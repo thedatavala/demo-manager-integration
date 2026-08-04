@@ -120,13 +120,30 @@ export function DataStateNotice({
               </ol>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {onRetry && (
-                <Button size="sm" variant="outline" onClick={onRetry}>
+                <Button size="sm" variant="outline" onClick={onRetry} disabled={isRetrying}>
                   <RefreshCw className="w-4 h-4 mr-2" />
-                  Retry
+                  Retry this panel
                 </Button>
               )}
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => void retryAll()}
+                disabled={isRetrying || registered === 0}
+              >
+                {isRetrying ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                )}
+                {isRetrying ? "Rechecking…" : `Recheck all${registered ? ` (${registered})` : ""}`}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setDiagnosticsOpen(true)}>
+                <Stethoscope className="w-4 h-4 mr-2" />
+                Diagnostics
+              </Button>
             </div>
 
             {diagnosis.raw && (
@@ -139,9 +156,19 @@ export function DataStateNotice({
             )}
           </CardContent>
         </Card>
+
+        <PermissionDiagnosticsDialog
+          open={diagnosticsOpen}
+          onOpenChange={setDiagnosticsOpen}
+          diagnosis={diagnosis}
+          resource={resource}
+          hasSession={hasSession}
+          onRetry={onRetry ?? (() => void retryAll())}
+        />
       </motion.div>
     );
   }
+
 
   if (isEmpty) {
     return (
