@@ -29,6 +29,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useDemoOverview } from "@/hooks/useDemoOverview";
+import { useAuth } from "@/hooks/useAuth";
+import DataStateNotice from "./DataStateNotice";
 
 interface DemoManagerMainContentProps {
   activeView: string;
