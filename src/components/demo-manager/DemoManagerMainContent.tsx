@@ -29,6 +29,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useDemoOverview } from "@/hooks/useDemoOverview";
+import { useAuth } from "@/hooks/useAuth";
+import DataStateNotice from "./DataStateNotice";
 
 interface DemoManagerMainContentProps {
   activeView: string;
@@ -96,18 +98,22 @@ const viewTitles: Record<string, { title: string; icon: React.ComponentType<{ cl
 const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const { user } = useAuth();
   const {
     demos,
     requests,
-    isLoading,
+    isDemosLoading,
+    isRequestsLoading,
     isFetching,
-    error,
+    demosError,
+    requestsError,
     setDemoStatus,
     extendDemo,
     cloneDemo,
     respondToRequest,
     refresh,
   } = useDemoOverview();
+
 
   const currentView = viewTitles[activeView] || { title: "Demo Overview", icon: Terminal };
   const ViewIcon = currentView.icon;
@@ -330,28 +336,24 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
               <Terminal className="w-5 h-5 text-teal-400" />
               Demo Instances
             </h2>
-            {error && (
-              <Card className="border-destructive/40 bg-destructive/5">
-                <CardContent className="p-4 text-sm text-destructive">
-                  Could not load demos: {error.message}
-                </CardContent>
-              </Card>
-            )}
-            {isLoading && (
-              <Card className="bg-card/50 border-border/50">
-                <CardContent className="p-4 text-sm text-muted-foreground flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Loading demos...
-                </CardContent>
-              </Card>
-            )}
-            {!isLoading && !error && filteredDemos.length === 0 && (
-              <Card className="bg-card/50 border-border/50">
-                <CardContent className="p-4 text-sm text-muted-foreground">
-                  No demos match the current filters.
-                </CardContent>
-              </Card>
-            )}
+            <DataStateNotice
+              isLoading={isDemosLoading}
+              error={demosError}
+              isEmpty={filteredDemos.length === 0}
+              hasSession={Boolean(user)}
+              resource="the demo instance list"
+              loadingLabel="Loading demos…"
+              emptyTitle={demos.length === 0 ? "No demos yet" : "No matches"}
+              emptyDescription={
+                demos.length === 0
+                  ? "No demo instances exist in the backend yet."
+                  : "No demos match the current search or status filter."
+              }
+              emptyIcon={<Terminal className="w-8 h-8 text-muted-foreground" />}
+              onRetry={handleRefresh}
+            >
             {filteredDemos.map((demo) => (
+
               <motion.div
                 key={demo.id}
                 whileHover={{ scale: 1.01 }}
@@ -413,6 +415,8 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
                 </div>
               </motion.div>
             ))}
+            </DataStateNotice>
+
           </div>
 
           {/* Demo Requests */}
@@ -421,14 +425,20 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
               <Clock className="w-5 h-5 text-amber-400" />
               Pending Requests
             </h2>
-            {!isLoading && requests.length === 0 && (
-              <Card className="bg-card/50 border-border/50">
-                <CardContent className="p-4 text-sm text-muted-foreground">
-                  No pending demo requests.
-                </CardContent>
-              </Card>
-            )}
+            <DataStateNotice
+              isLoading={isRequestsLoading}
+              error={requestsError}
+              isEmpty={requests.length === 0}
+              hasSession={Boolean(user)}
+              resource="pending demo requests"
+              loadingLabel="Loading demo requests…"
+              emptyTitle="No pending requests"
+              emptyDescription="Every demo request has been handled."
+              emptyIcon={<Clock className="w-8 h-8 text-muted-foreground" />}
+              onRetry={handleRefresh}
+            >
             {requests.map((req) => (
+
               <Card key={req.id} className="bg-card/50 border-border/50">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
@@ -455,6 +465,8 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
                 </CardContent>
               </Card>
             ))}
+            </DataStateNotice>
+
           </div>
         </div>
       </div>

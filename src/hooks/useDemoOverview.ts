@@ -202,8 +202,12 @@ export const useDemoOverview = () => {
     demos: demosQuery.data ?? [],
     requests: requestsQuery.data ?? [],
     isLoading: demosQuery.isLoading || requestsQuery.isLoading,
+    isDemosLoading: demosQuery.isLoading,
+    isRequestsLoading: requestsQuery.isLoading,
     isFetching: demosQuery.isFetching || requestsQuery.isFetching,
     error: (demosQuery.error ?? requestsQuery.error) as Error | null,
+    demosError: demosQuery.error as unknown,
+    requestsError: requestsQuery.error as unknown,
     setDemoStatus,
     extendDemo,
     cloneDemo,
@@ -211,5 +215,6 @@ export const useDemoOverview = () => {
     refresh,
   };
 };
+
 
 export default useDemoOverview;
