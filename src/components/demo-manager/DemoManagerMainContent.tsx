@@ -425,14 +425,20 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
               <Clock className="w-5 h-5 text-amber-400" />
               Pending Requests
             </h2>
-            {!isLoading && requests.length === 0 && (
-              <Card className="bg-card/50 border-border/50">
-                <CardContent className="p-4 text-sm text-muted-foreground">
-                  No pending demo requests.
-                </CardContent>
-              </Card>
-            )}
+            <DataStateNotice
+              isLoading={isRequestsLoading}
+              error={requestsError}
+              isEmpty={requests.length === 0}
+              hasSession={Boolean(user)}
+              resource="pending demo requests"
+              loadingLabel="Loading demo requests…"
+              emptyTitle="No pending requests"
+              emptyDescription="Every demo request has been handled."
+              emptyIcon={<Clock className="w-8 h-8 text-muted-foreground" />}
+              onRetry={handleRefresh}
+            >
             {requests.map((req) => (
+
               <Card key={req.id} className="bg-card/50 border-border/50">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
