@@ -409,6 +409,8 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
                 </div>
               </motion.div>
             ))}
+            </DataStateNotice>
+
           </div>
 
           {/* Demo Requests */}
