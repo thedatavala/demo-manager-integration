@@ -98,18 +98,22 @@ const viewTitles: Record<string, { title: string; icon: React.ComponentType<{ cl
 const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const { user } = useAuth();
   const {
     demos,
     requests,
-    isLoading,
+    isDemosLoading,
+    isRequestsLoading,
     isFetching,
-    error,
+    demosError,
+    requestsError,
     setDemoStatus,
     extendDemo,
     cloneDemo,
     respondToRequest,
     refresh,
   } = useDemoOverview();
+
 
   const currentView = viewTitles[activeView] || { title: "Demo Overview", icon: Terminal };
   const ViewIcon = currentView.icon;
