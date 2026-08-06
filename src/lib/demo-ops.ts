@@ -327,18 +327,20 @@ export const detectFailures = (demos: DemoRow[], logs: ValidationLogRow[]): Dete
 
   for (const log of logs) {
     const kinds = matchKinds(log.http_status ?? null, log.error_message ?? "", log.validation_type);
+    const demoId = log.demo_id ?? "";
     for (const kind of kinds) {
       hits.push({
         kind,
-        demoId: log.demo_id,
-        demoTitle: titleById.get(log.demo_id) ?? log.demo_url ?? log.demo_id,
-        at: log.validated_at ?? log.created_at,
+        demoId,
+        demoTitle: titleById.get(demoId) ?? log.demo_url ?? demoId,
+        at: log.validated_at ?? log.created_at ?? new Date().toISOString(),
         evidence:
           log.error_message ??
           `${log.validation_type ?? "check"} returned HTTP ${log.http_status ?? "—"} (${log.status})`,
       });
     }
   }
+
 
   return hits.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
 };
