@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoManagerRouteImport } from './routes/demo-manager'
+import { Route as DemoOpsRouteImport } from './routes/demo-ops'
 import { Route as DemoWorkspaceRouteImport } from './routes/demo-workspace'
 import { Route as ProductDemoManagerRouteImport } from './routes/product-demo-manager'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const DemoManagerRoute = DemoManagerRouteImport.update({
   id: '/demo-manager',
   path: '/demo-manager',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoOpsRoute = DemoOpsRouteImport.update({
+  id: '/demo-ops',
+  path: '/demo-ops',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoWorkspaceRoute = DemoWorkspaceRouteImport.update({
@@ -38,12 +44,14 @@ const ProductDemoManagerRoute = ProductDemoManagerRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo-manager': typeof DemoManagerRoute
+  '/demo-ops': typeof DemoOpsRoute
   '/demo-workspace': typeof DemoWorkspaceRoute
   '/product-demo-manager': typeof ProductDemoManagerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/demo-manager': typeof DemoManagerRoute
+  '/demo-ops': typeof DemoOpsRoute
   '/demo-workspace': typeof DemoWorkspaceRoute
   '/product-demo-manager': typeof ProductDemoManagerRoute
 }
@@ -51,18 +59,30 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/demo-manager': typeof DemoManagerRoute
+  '/demo-ops': typeof DemoOpsRoute
   '/demo-workspace': typeof DemoWorkspaceRoute
   '/product-demo-manager': typeof ProductDemoManagerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo-manager' | '/demo-workspace' | '/product-demo-manager'
+  fullPaths:
+    | '/'
+    | '/demo-manager'
+    | '/demo-ops'
+    | '/demo-workspace'
+    | '/product-demo-manager'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo-manager' | '/demo-workspace' | '/product-demo-manager'
+  to:
+    | '/'
+    | '/demo-manager'
+    | '/demo-ops'
+    | '/demo-workspace'
+    | '/product-demo-manager'
   id:
     | '__root__'
     | '/'
     | '/demo-manager'
+    | '/demo-ops'
     | '/demo-workspace'
     | '/product-demo-manager'
   fileRoutesById: FileRoutesById
@@ -70,6 +90,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoManagerRoute: typeof DemoManagerRoute
+  DemoOpsRoute: typeof DemoOpsRoute
   DemoWorkspaceRoute: typeof DemoWorkspaceRoute
   ProductDemoManagerRoute: typeof ProductDemoManagerRoute
 }
@@ -88,6 +109,13 @@ declare module '@tanstack/react-router' {
       path: '/demo-manager'
       fullPath: '/demo-manager'
       preLoaderRoute: typeof DemoManagerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo-ops': {
+      id: '/demo-ops'
+      path: '/demo-ops'
+      fullPath: '/demo-ops'
+      preLoaderRoute: typeof DemoOpsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo-workspace': {
@@ -110,6 +138,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoManagerRoute: DemoManagerRoute,
+  DemoOpsRoute: DemoOpsRoute,
   DemoWorkspaceRoute: DemoWorkspaceRoute,
   ProductDemoManagerRoute: ProductDemoManagerRoute,
 }
