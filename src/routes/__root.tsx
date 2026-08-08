@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
 import { DataRetryProvider } from "@/hooks/useDataRetry";
+import { AppSidebar, useSidebarState } from "@/components/layout/AppSidebar";
+import { TopBar } from "@/components/layout/TopBar";
+
 
 
 import appCss from "../styles.css?url";
@@ -120,12 +123,26 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { collapsed, toggleCollapsed, mobileOpen, setMobileOpen } = useSidebarState();
 
   return (
     <QueryClientProvider client={queryClient}>
       <DataRetryProvider>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <div className="flex min-h-screen w-full bg-background">
+          <AppSidebar
+            collapsed={collapsed}
+            onToggleCollapsed={toggleCollapsed}
+            mobileOpen={mobileOpen}
+            onCloseMobile={() => setMobileOpen(false)}
+          />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <TopBar onOpenMenu={() => setMobileOpen(true)} />
+            <main className="min-w-0 flex-1">
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+            </main>
+          </div>
+        </div>
       </DataRetryProvider>
       <Toaster />
     </QueryClientProvider>

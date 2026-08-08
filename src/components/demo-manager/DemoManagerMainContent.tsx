@@ -32,6 +32,7 @@ import { useDemoOverview } from "@/hooks/useDemoOverview";
 import { useAuth } from "@/hooks/useAuth";
 import DataStateNotice from "./DataStateNotice";
 import { useDataRetry } from "@/hooks/useDataRetry";
+import { PageShell, PageBanner } from "@/components/layout/PageShell";
 
 interface DemoManagerMainContentProps {
   activeView: string;
@@ -219,30 +220,28 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
   };
 
   return (
-    <ScrollArea className="h-screen">
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
-              <ViewIcon className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">{currentView.title}</h1>
-              <p className="text-muted-foreground text-sm">Demo Manager • Live Software Control</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" className="gap-2" onClick={handleRefresh} disabled={isFetching || isRetrying}>
-              <RefreshCw className={cn("w-4 h-4", (isFetching || isRetrying) && "animate-spin")} />
-              Refresh
-            </Button>
-            <Button size="sm" className="gap-2 bg-gradient-to-r from-teal-500 to-cyan-600">
-              <Plus className="w-4 h-4" />
-              Create Demo
-            </Button>
-          </div>
-        </div>
+    <PageShell>
+      <div className="space-y-6">
+        {/* Banner */}
+        <PageBanner
+          icon={ViewIcon as never}
+          eyebrow="Demo Manager • Live Software Control"
+          title={currentView.title}
+          subtitle="Monitor every live demo, health signal, credential set and upgrade request from one control room."
+          action={
+            <>
+              <Button variant="outline" size="sm" className="gap-2" onClick={handleRefresh} disabled={isFetching || isRetrying}>
+                <RefreshCw className={cn("w-4 h-4", (isFetching || isRetrying) && "animate-spin")} />
+                Refresh
+              </Button>
+              <Button size="sm" className="btn-glow gap-2">
+                <Plus className="w-4 h-4" />
+                Create Demo
+              </Button>
+            </>
+          }
+        />
+
 
         {/* Stats Cards */}
         <div className="grid grid-cols-5 gap-4">
@@ -473,7 +472,7 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
           </div>
         </div>
       </div>
-    </ScrollArea>
+    </PageShell>
   );
 };
 
