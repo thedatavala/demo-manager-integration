@@ -2,9 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import DemoManagerFullLayout from "@/components/demo-manager/DemoManagerFullLayout";
 
 export const Route = createFileRoute("/")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    view: typeof search.view === "string" ? search.view : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { view?: string } =>
+    typeof search.view === "string" ? { view: search.view } : {},
   head: () => ({
     meta: [
       { title: "Demo Manager — Software Vala" },
