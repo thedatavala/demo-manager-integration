@@ -32,6 +32,7 @@ import { useDemoOverview } from "@/hooks/useDemoOverview";
 import { useAuth } from "@/hooks/useAuth";
 import DataStateNotice from "./DataStateNotice";
 import { useDataRetry } from "@/hooks/useDataRetry";
+import { PageShell, PageBanner } from "@/components/layout/PageShell";
 
 interface DemoManagerMainContentProps {
   activeView: string;
