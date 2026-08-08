@@ -116,49 +116,29 @@ const DemoOpsCenter = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-background flex">
-      <aside className="w-60 shrink-0 border-r border-border/30 bg-card sticky top-0 h-screen">
-        <div className="p-4 border-b border-border/30">
-          <h1 className="text-sm font-semibold text-foreground">Operations Center</h1>
-          <p className="text-[10px] text-muted-foreground font-mono">real monitoring · zero fake data</p>
-        </div>
-        <ScrollArea className="h-[calc(100vh-72px)]">
-          <nav className="p-2 space-y-1">
-            {SECTIONS.map((section) => {
-              const Icon = section.icon;
-              return (
-                <button
-                  key={section.id}
-                  onClick={() => setActive(section.id)}
-                  className={cn(
-                    "w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors",
-                    active === section.id
-                      ? "bg-neon-teal/10 text-neon-teal border-l-2 border-neon-teal"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50",
-                  )}
-                >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  <span className="text-xs font-medium truncate">{section.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </ScrollArea>
-      </aside>
+  const current = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0];
 
-      <main className="flex-1 min-w-0">
-        <motion.div
-          key={active}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-          className="p-5 space-y-4"
-        >
-          {render()}
-        </motion.div>
-      </main>
-    </div>
+  return (
+    <PageShell>
+      <PageBanner
+        icon={current.icon}
+        eyebrow="real monitoring · zero fake data"
+        title="Operations Center"
+        subtitle={`${current.label} — live health, branding, lifecycle, security, analytics and audit signals derived from real tables.`}
+      />
+
+      <SectionPills sections={SECTIONS} active={active} onChange={setActive} />
+
+      <motion.div
+        key={active}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+        className="space-y-4"
+      >
+        {render()}
+      </motion.div>
+    </PageShell>
   );
 };
 
