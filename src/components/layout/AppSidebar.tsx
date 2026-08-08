@@ -76,8 +76,7 @@ export function AppSidebar({
   const [query, setQuery] = useState("");
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
-  const userName =
-    user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Demo Manager";
+  const userName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Demo Manager";
   const initials = userName.charAt(0).toUpperCase();
 
   const isActive = (item: NavItem) => {
@@ -214,7 +213,10 @@ export function AppSidebar({
                     </span>
                   )}
                   <ChevronDown
-                    className={cn("h-3.5 w-3.5 transition-transform duration-200", open && "rotate-180")}
+                    className={cn(
+                      "h-3.5 w-3.5 transition-transform duration-200",
+                      open && "rotate-180",
+                    )}
                   />
                 </span>
               </button>
