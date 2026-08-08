@@ -6,8 +6,8 @@ import {
   BarChart3, FileText, Settings, ChevronRight, Lock,
   ShieldAlert, Activity
 } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { PageShell, PageBanner } from "@/components/layout/PageShell";
 import ProductDashboard from "./ProductDashboard";
 import AddProduct from "./AddProduct";
 import ProductList from "./ProductList";
