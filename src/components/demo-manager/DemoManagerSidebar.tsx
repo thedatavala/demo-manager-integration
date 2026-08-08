@@ -94,7 +94,7 @@ interface MenuItem {
 }
 
 // Full 12-section sidebar structure as per specification
-const menuSections: MenuItem[] = [
+export const menuSections: MenuItem[] = [
   // 1️⃣ Demo Overview
   {
     id: "demo-overview",
