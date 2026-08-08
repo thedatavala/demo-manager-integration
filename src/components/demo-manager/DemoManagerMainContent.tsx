@@ -471,7 +471,7 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
           </div>
         </div>
       </div>
-    </ScrollArea>
+    </PageShell>
   );
 };
 
