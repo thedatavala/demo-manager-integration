@@ -126,7 +126,7 @@ const DemoOpsCenter = () => {
         subtitle={`${current.label} — live health, branding, lifecycle, security, analytics and audit signals derived from real tables.`}
       />
 
-      <SectionPills sections={SECTIONS} active={active} onChange={setActive} />
+      <SectionPills<SectionId> sections={SECTIONS} active={active} onChange={setActive} />
 
       <motion.div
         key={active}
