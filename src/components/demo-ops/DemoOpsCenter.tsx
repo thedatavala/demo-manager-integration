@@ -8,8 +8,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { PageShell, PageBanner, SectionPills } from "@/components/layout/PageShell";
 import {
   Bell,
   Bot,
