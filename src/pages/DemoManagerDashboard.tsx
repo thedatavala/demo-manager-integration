@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import DemoManagerTopBar from '@/components/demo-manager/DemoManagerTopBar';
+import { PageShell, PageBanner } from '@/components/layout/PageShell';
 import DemoDashboard from '@/components/demo-manager/DemoDashboard';
 import DemoStatusGrid from '@/components/demo-manager/DemoStatusGrid';
 import DemoUptimeMonitor from '@/components/demo-manager/DemoUptimeMonitor';
