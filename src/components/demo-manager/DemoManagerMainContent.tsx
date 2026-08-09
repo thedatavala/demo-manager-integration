@@ -441,9 +441,10 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
 
           {/* Demo Requests */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Clock className="w-5 h-5 text-amber-400" />
+            <h2 className="text-base font-semibold tracking-tight text-foreground flex items-center gap-2">
+              <span className="kpi-icon kpi-amber h-8 w-8"><Clock className="w-4 h-4" /></span>
               Pending Requests
+              <Badge variant="outline" className="ml-1 text-[10px] tabular-nums">{requests.length}</Badge>
             </h2>
             <DataStateNotice
               isLoading={isRequestsLoading}
