@@ -101,6 +101,7 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const { user } = useAuth();
+  const navigate = useRouterNavigate();
   const { retryAll, isRetrying } = useDataRetry();
   const {
     demos,
