@@ -304,12 +304,13 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
         </Card>
 
         {/* Two Column Layout */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid gap-6 grid-cols-1 xl:grid-cols-2 crisp-text">
           {/* Demo Instances */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Terminal className="w-5 h-5 text-teal-400" />
+            <h2 className="text-base font-semibold tracking-tight text-foreground flex items-center gap-2">
+              <span className="kpi-icon kpi-primary h-8 w-8"><Terminal className="w-4 h-4" /></span>
               Demo Instances
+              <Badge variant="outline" className="ml-1 text-[10px] tabular-nums">{filteredDemos.length}</Badge>
             </h2>
             <DataStateNotice
               isLoading={isDemosLoading}
@@ -331,65 +332,85 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
 
               <motion.div
                 key={demo.id}
-                whileHover={{ scale: 1.01 }}
-                className={cn(
-                  "relative p-5 rounded-xl border-2 cursor-pointer transition-all duration-300 bg-card hover:bg-accent/20",
-                  "border-border/50 hover:border-teal-500/30"
-                )}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="demo-row p-5"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div>
+                <div className="flex items-start justify-between gap-4 mb-3 pr-24">
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-bold text-foreground">{demo.name}</h3>
-                      <Badge className={cn("text-xs", getStatusColor(demo.status))}>
+                      <h3 className="truncate font-semibold tracking-tight text-foreground">{demo.name}</h3>
+                      <Badge className={cn("text-[10px] uppercase tracking-wider", getStatusColor(demo.status))}>
                         {demo.status}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">{demo.product}</p>
+                    <p className="truncate text-sm text-muted-foreground">{demo.product}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-foreground">{demo.activeUsers} login roles</p>
-                    <p className="text-xs text-muted-foreground uppercase">{demo.region}</p>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-semibold tabular-nums text-foreground">{demo.activeUsers} login roles</p>
+                    <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{demo.region}</p>
                   </div>
                 </div>
 
                 <div className="space-y-2 mb-3">
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Health</span>
-                    <span>{demo.usagePercent}%</span>
+                    <span className="uppercase tracking-[0.12em] text-[10px] font-semibold">Health</span>
+                    <span className="tabular-nums font-semibold text-foreground">{demo.usagePercent}%</span>
                   </div>
-                  <Progress value={demo.usagePercent} className="h-2" />
+                  <Progress value={demo.usagePercent} className="h-1.5" />
                 </div>
 
                 {/* Quick Actions */}
-                <div className="flex items-center gap-2 pt-3 border-t border-border/30">
+                <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-border/40">
                   {demo.status === "running" ? (
-                    <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => handleStopDemo(demo.id)}>
+                    <Button size="sm" variant="outline" className="icon3d gap-1 text-xs" onClick={() => handleStopDemo(demo.id)}>
                       <Pause className="w-3 h-3" />
                       Stop
                     </Button>
                   ) : (
-                    <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => handleStartDemo(demo.id)}>
+                    <Button size="sm" variant="outline" className="icon3d gap-1 text-xs" onClick={() => handleStartDemo(demo.id)}>
                       <Play className="w-3 h-3" />
                       Start
                     </Button>
                   )}
-                  <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => handleExtendDemo(demo.id)}>
+                  <Button size="sm" variant="outline" className="icon3d gap-1 text-xs" onClick={() => handleExtendDemo(demo.id)}>
                     <Clock className="w-3 h-3" />
                     Extend
                   </Button>
-                  <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => handleCloneDemo(demo.id)}>
+                  <Button size="sm" variant="outline" className="icon3d gap-1 text-xs" onClick={() => handleCloneDemo(demo.id)}>
                     <Copy className="w-3 h-3" />
                     Clone
                   </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="icon3d gap-1 text-xs ml-auto"
+                    disabled={!demo.url}
+                    onClick={() => handleOpenDemo(demo.url)}
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Open
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="icon3d gap-1 text-xs"
+                    disabled={!demo.url}
+                    onClick={() => handleCopyUrl(demo.url)}
+                  >
+                    <Copy className="w-3 h-3" />
+                    URL
+                  </Button>
                 </div>
 
-                <div className="absolute right-4 top-4 flex items-center gap-1 text-xs text-muted-foreground">
+                <div className="absolute right-4 top-4 flex items-center gap-1 rounded-full border border-border/60 bg-surface/70 px-2 py-0.5 text-[10px] tabular-nums text-muted-foreground">
                   <Clock className="w-3 h-3" />
                   {demo.expiresIn}
                 </div>
               </motion.div>
             ))}
+
             </DataStateNotice>
 
           </div>
