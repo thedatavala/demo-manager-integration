@@ -243,64 +243,37 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
         />
 
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-5 gap-4">
-          <Card className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border-teal-500/30">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground">Total Demos</p>
-                  <p className="text-3xl font-bold text-teal-400">{totalStats.totalDemos}</p>
+        {/* Stats Cards — 4K density, 3D bevel + accent glow */}
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 xl:grid-cols-5 crisp-text">
+          {[
+            { label: "Total Demos", value: totalStats.totalDemos, icon: Terminal, tone: "kpi-primary" },
+            { label: "Active Now", value: totalStats.activeDemos, icon: Activity, tone: "kpi-emerald" },
+            { label: "Login Roles", value: totalStats.totalUsers, icon: Users, tone: "kpi-sky" },
+            { label: "Pending Requests", value: totalStats.pendingRequests, icon: Clock, tone: "kpi-amber" },
+            { label: "Expiring Soon", value: totalStats.expiringSoon, icon: AlertTriangle, tone: "kpi-rose" },
+          ].map((kpi) => (
+            <motion.div
+              key={kpi.label}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className={cn("kpi-tile p-5", kpi.tone)}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    {kpi.label}
+                  </p>
+                  <p className="kpi-value mt-2 text-4xl">{kpi.value}</p>
                 </div>
-                <Terminal className="w-10 h-10 text-teal-400/30" />
+                <span className="kpi-icon h-11 w-11 shrink-0">
+                  <kpi.icon className="h-5 w-5" />
+                </span>
               </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-emerald-500/10 border-emerald-500/30">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground">Active Now</p>
-                  <p className="text-3xl font-bold text-emerald-400">{totalStats.activeDemos}</p>
-                </div>
-                <Activity className="w-10 h-10 text-emerald-400/30" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-blue-500/10 border-blue-500/30">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground">Login Roles</p>
-                  <p className="text-3xl font-bold text-blue-400">{totalStats.totalUsers}</p>
-                </div>
-                <Users className="w-10 h-10 text-blue-400/30" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-amber-500/10 border-amber-500/30">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground">Pending Requests</p>
-                  <p className="text-3xl font-bold text-amber-400">{totalStats.pendingRequests}</p>
-                </div>
-                <Clock className="w-10 h-10 text-amber-400/30" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-red-500/10 border-red-500/30">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground">Expiring Soon</p>
-                  <p className="text-3xl font-bold text-red-400">{totalStats.expiringSoon}</p>
-                </div>
-                <AlertTriangle className="w-10 h-10 text-red-400/30" />
-              </div>
-            </CardContent>
-          </Card>
+            </motion.div>
+          ))}
         </div>
+
 
         {/* Filters */}
         <Card className="bg-card/50 backdrop-blur border-border/50">
