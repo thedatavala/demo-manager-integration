@@ -460,31 +460,32 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
             >
             {requests.map((req) => (
 
-              <Card key={req.id} className="bg-card/50 border-border/50">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-medium text-foreground">{req.company}</p>
-                        <Badge className={cn("text-xs", getPriorityColor(req.priority))}>
-                          {req.priority}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground">{req.product} • {req.requestedBy}</p>
+              <div key={req.id} className="demo-row p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="truncate font-semibold tracking-tight text-foreground">{req.company}</p>
+                      <Badge className={cn("text-[10px] uppercase tracking-wider", getPriorityColor(req.priority))}>
+                        {req.priority}
+                      </Badge>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button size="sm" variant="outline" className="gap-1 text-xs text-emerald-400 border-emerald-500/50" onClick={() => handleApproveRequest(req.id)}>
-                        <CheckCircle className="w-3 h-3" />
-                        Approve
-                      </Button>
-                      <Button size="sm" variant="outline" className="gap-1 text-xs text-red-400 border-red-500/50" onClick={() => handleRejectRequest(req.id)}>
-                        <AlertTriangle className="w-3 h-3" />
-                        Reject
-                      </Button>
-                    </div>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {req.product} • {req.requestedBy} • {req.requestDate}
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" className="icon3d gap-1 text-xs text-emerald-400 border-emerald-500/50" onClick={() => handleApproveRequest(req.id)}>
+                      <CheckCircle className="w-3 h-3" />
+                      Approve
+                    </Button>
+                    <Button size="sm" variant="outline" className="icon3d gap-1 text-xs text-red-400 border-red-500/50" onClick={() => handleRejectRequest(req.id)}>
+                      <AlertTriangle className="w-3 h-3" />
+                      Reject
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
             ))}
             </DataStateNotice>
 
