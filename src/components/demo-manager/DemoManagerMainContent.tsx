@@ -247,15 +247,20 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
           subtitle="Monitor every live demo, health signal, credential set and upgrade request from one control room."
           action={
             <>
-              <Button variant="outline" size="sm" className="gap-2" onClick={handleRefresh} disabled={isFetching || isRetrying}>
+              <Button variant="outline" size="sm" className="icon3d gap-2" onClick={handleRefresh} disabled={isFetching || isRetrying}>
                 <RefreshCw className={cn("w-4 h-4", (isFetching || isRetrying) && "animate-spin")} />
                 Refresh
               </Button>
-              <Button size="sm" className="btn-glow gap-2">
+              <Button
+                size="sm"
+                className="btn-glow gap-2"
+                onClick={() => navigate({ to: "/product-demo-manager", search: { view: "add-demo" } as never })}
+              >
                 <Plus className="w-4 h-4" />
                 Create Demo
               </Button>
             </>
+
           }
         />
 
