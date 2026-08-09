@@ -6,6 +6,7 @@
  */
 
 import { useState } from "react";
+import { useNavigate as useRouterNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
