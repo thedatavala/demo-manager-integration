@@ -176,6 +176,23 @@ const DemoManagerMainContent = ({ activeView }: DemoManagerMainContentProps) => 
     }
   };
 
+  const handleOpenDemo = (url: string) => {
+    if (!url) {
+      toast.error("No demo URL configured");
+      return;
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  const handleCopyUrl = async (url: string) => {
+    if (!url) {
+      toast.error("No demo URL configured");
+      return;
+    }
+    await navigator.clipboard.writeText(url);
+    toast.success("Demo URL copied");
+  };
+
   const handleRefresh = async () => {
     await Promise.all([refresh(), retryAll()]);
     toast.info("Data refreshed");
